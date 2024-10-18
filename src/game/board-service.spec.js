@@ -3,7 +3,8 @@ import {
   initializeEnemyBoard,
   getRelativePosition,
   isHit,
-  placeShip
+  placeShip,
+  areAllShipsSunk
 } from './board-service';
 
 describe('the board service', () => {
@@ -94,5 +95,18 @@ describe('the board service', () => {
     const enemyBoard = initializeEnemyBoard();
     expect(isHit(enemyBoard, 'B3')).toBe(true);
     expect(isHit(enemyBoard, 'B1')).toBe(false);
+  });
+
+  it('should check if all ships are sunk', () => {
+    const board = initializeBoard();
+    expect(areAllShipsSunk(board.fleet)).toBe(true);
+    placeShip(board, 0, 'A1', 'down');
+    expect(areAllShipsSunk(board.fleet)).toBe(false);
+  });
+
+  it('should not end the game when ships are still afloat', () => {
+    const board = initializeBoard();
+    placeShip(board, 0, 'A1', 'down');
+    expect(areAllShipsSunk(board.fleet)).toBe(false);
   });
 });
