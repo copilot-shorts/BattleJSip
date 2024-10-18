@@ -4,7 +4,8 @@ import {
   initializeBoard,
   initializeEnemyBoard,
   isHit,
-  placeShip
+  placeShip,
+  areAllShipsSunk
 } from './game/board-service';
 import './App.css';
 
@@ -89,7 +90,8 @@ export default class App extends Component {
       currentPosition: undefined,
       currentShipIndex: 0,
       enemyBoard: initializeEnemyBoard(),
-      myBoard: initializeBoard()
+      myBoard: initializeBoard(),
+      gameOver: false
     };
   }
 
@@ -113,18 +115,36 @@ export default class App extends Component {
     }
   };
 
+  checkIfAllShipsSunk = (board) => {
+    return areAllShipsSunk(board.fleet);
+  };
+
   shoot = position => {
+    if (this.state.gameOver) return;
+
     alert(
       `Shoot at ${position}: ${
         isHit(this.state.enemyBoard, position) ? 'Hit!' : 'Miss!'
       }`
     );
+
+    if (this.checkIfAllShipsSunk(this.state.enemyBoard)) {
+      this.setState({ gameOver: true });
+      alert('🎉 All enemy ships have sunk! You win! 🎉');
+      return;
+    }
+
     const counterAttack = getRandomPosition(8, 8);
     alert(
       `Enemy shoots at ${counterAttack}: ${
         isHit(this.state.myBoard, counterAttack) ? 'Hit!' : 'Miss!'
       }`
     );
+
+    if (this.checkIfAllShipsSunk(this.state.myBoard)) {
+      this.setState({ gameOver: true });
+      alert('💥 All your ships have sunk! You lose! 💥');
+    }
   };
 
   render() {

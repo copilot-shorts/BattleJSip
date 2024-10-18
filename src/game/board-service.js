@@ -94,3 +94,7 @@ export function getRandomPosition(columnCount, rowCount) {
   const row = (Math.round(Math.random()) * columnCount).toString();
   return column + row;
 }
+
+export function areAllShipsSunk(fleet) {
+  return fleet.every(ship => ship.positions.length === 0);
+}
